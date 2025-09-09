@@ -1,154 +1,112 @@
 # 🌌 Hosting My Space Invaders Game on Amazon S3 with Terraform
 
-I decided to host my **Space Invaders game** on Amazon S3 using **Terraform** to make it publicly playable. This version of the project automates the creation of the **S3 bucket**, **uploads game files**, and **configures static website hosting** — all via **Infrastructure as Code**. By the end, anyone can play my game via a public URL! 🪣🎮
+I decided to host my **Space Invaders** game on **Amazon S3** using **Terraform**. This makes the game publicly playable without needing a server! 🪣🎮
+
+Terraform allows me to **declare the S3 bucket, public access, bucket policy, website hosting, and game file uploads in code** — reusable, version-controlled, and environment-friendly.
 
 ---
 
-## 📋 Project Overview
+## 📂 Project Structure
 
-**Terraform Goal:**
-Use Terraform to declaratively provision an S3 bucket, upload my Space Invaders game files, and enable static website hosting so that the game is publicly accessible.
-
-**Key Benefits of Terraform:**
-
-* Infrastructure is **reproducible and version-controlled**
-* Easy to **modify or destroy** resources without manual intervention
-* Makes my **portfolio project fully automated**
-
----
-
-## 📦 Terraform Project Structure
-
-```
-terraform-space-invaders/
-├── main.tf          <-- Terraform configuration for S3 bucket and website hosting
-├── variables.tf     <-- Input variables (bucket name, region, game file path)
-├── outputs.tf       <-- Outputs (bucket name, website URL)
-├── game/            <-- Local folder containing game files
-│   ├── index.html
-│   ├── style.css
-│   └── game.js
-└── terraform.tfvars <-- Variable values
+```text
+space-invaders-terraform/
+├── main.tf              # Terraform configuration for S3 bucket, policy, website hosting, and file uploads
+├── variables.tf         # Variable declarations
+├── terraform.tfvars     # Values for the variables
+├── outputs.tf           # Outputs (bucket name, website URL)
+└── game/                # Local folder containing game files
+    ├── index.html
+    ├── style.css
+    └── game.js
 ```
 
+> 💡 All Terraform code files will be uploaded to this repo.
+> 🔗 [View Terraform Code in the Repo](#) (replace `#` with your repo link)
+
 ---
 
-## 🛠 Terraform Steps I Followed
+## 🧩 Terraform Workflow
 
-### **Step 1: Configure Terraform Provider**
+This project is broken down into **five main steps**:
 
-I set up the **AWS provider** in `main.tf`:
+1. **Define variables**
 
-```hcl
-provider "aws" {
-  region = var.aws_region
-}
+   * Input variables include the AWS region, S3 bucket name, and local game folder path.
+   * Values are set in `terraform.tfvars` for environment-specific overrides.
+   * [See variables.tf](#) | [See terraform.tfvars](#)
+
+2. **Create the S3 bucket**
+
+   * Terraform provisions a bucket using the name defined in the variables.
+   * The bucket will later host the static website.
+   * [See main.tf - bucket creation](#)
+
+3. **Configure public access**
+
+   * S3 buckets are private by default.
+   * Terraform sets up public access so the game can be viewed by anyone online.
+   * [See main.tf - public access configuration](#)
+
+4. **Apply bucket policy**
+
+   * Terraform applies a policy granting public read access to all objects in the bucket.
+   * This ensures the game files can be loaded in a browser.
+   * [See main.tf - bucket policy](#)
+
+5. **Enable static website hosting and upload game files**
+
+   * Terraform enables static website hosting with `index.html` as the entry point.
+   * All files in the local `game/` folder are uploaded to S3.
+   * After deployment, the website URL can be retrieved from outputs.
+   * [See main.tf - website configuration and object uploads](#)
+
+---
+
+## ⚡ Deployment Steps
+
+1. **Initialize Terraform**
+
+```bash
+terraform init
 ```
 
-This tells Terraform which **AWS account and region** to use.
+2. **Preview the changes**
 
----
-
-### **Step 2: Create the S3 Bucket**
-
-```hcl
-resource "aws_s3_bucket" "space_invaders" {
-  bucket = var.bucket_name
-  acl    = "public-read"
-
-  website {
-    index_document = "index.html"
-  }
-}
+```bash
+terraform plan
 ```
 
-**What this does:**
+3. **Apply the configuration**
 
-* Creates an S3 bucket with the name I provided
-* Enables **public read access**
-* Sets up **static website hosting** with `index.html` as the entry point
-
-💡 **Tip:** Terraform automatically ensures that the bucket name is globally unique.
-
----
-
-### **Step 3: Upload Game Files Using S3 Bucket Objects**
-
-```hcl
-resource "aws_s3_bucket_object" "game_files" {
-  for_each = fileset("${path.module}/game", "**")
-
-  bucket = aws_s3_bucket.space_invaders.id
-  key    = each.value
-  source = "${path.module}/game/${each.value}"
-  acl    = "public-read"
-}
+```bash
+terraform apply
 ```
 
-**Explanation:**
+* Confirm with `yes`
+* Terraform will create the bucket, apply the policy, enable website hosting, and upload all game files
 
-* Uses `fileset` to **loop over all files** in the local `game/` folder
-* Uploads **HTML, CSS, and JS files** individually
-* Sets each file to **public-read** so the website can be accessed
+4. **Retrieve the website URL**
 
-💡 **Why each file is public:**
-Static website hosting requires all objects to be **public** so browsers can load them.
-
----
-
-### **Step 4: Output the Website URL**
-
-```hcl
-output "website_url" {
-  value = aws_s3_bucket.space_invaders.website_endpoint
-}
+```bash
+terraform output website_url
 ```
 
-This gives me the **S3 website endpoint** once Terraform applies the configuration.
+* Open this URL in a browser to play your Space Invaders game!
 
 ---
 
-## ✅ How I Deployed
+## 💡 Notes & Best Practices
 
-1. Ran `terraform init` to initialize the working directory.
-2. Ran `terraform plan` to preview changes.
-3. Ran `terraform apply` to create the bucket, upload game files, and enable hosting.
-4. Verified the **website URL** in the browser — my Space Invaders game loaded perfectly! 🎮
-
-💡 **Silly mistake I fixed:** I initially uploaded the folder itself instead of just the files, which caused a **404 error**. After adjusting the paths in Terraform, everything worked.
+* **ACLs vs Bucket Policy:** ACLs control individual objects; bucket policies control the whole bucket.
+* **Static website hosting:** All game files must be public to be accessible online.
+* **Versioning:** Not required for small portfolio projects; saves storage costs.
+* **Production-ready:** For real deployments, consider using **CloudFront** for HTTPS, caching, and global performance.
 
 ---
 
-## 📌 Project Summary
+## 📌 References
 
-| Step                             | Status | Key Notes                                         |
-| -------------------------------- | ------ | ------------------------------------------------- |
-| Create S3 bucket                 | ✅      | Bucket created via Terraform; public read enabled |
-| Upload game files                | ✅      | HTML, CSS, and JS uploaded automatically          |
-| Configure static website hosting | ✅      | Index document set; website endpoint outputted    |
+* [Amazon S3 Documentation](https://docs.aws.amazon.com/s3/index.html)
+* [Static Website Hosting on S3](https://docs.aws.amazon.com/AmazonS3/latest/userguide/WebsiteHosting.html)
+* [Terraform AWS S3 Bucket Resource](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket)
 
----
-
-## 💡 Notes / Tips
-
-* **Terraform is idempotent:** Running `terraform apply` multiple times won’t break existing resources.
-* **ACLs vs. Bucket Policies:** ACLs control individual files; bucket policies can control the whole bucket.
-* **Versioning:** Not needed for portfolio projects, helps save costs.
-* **CloudFront for Production:** For production sites, add CloudFront for HTTPS, caching, and security.
-* **Fileset & Loops:** `fileset` with `for_each` is super handy for bulk file uploads.
-
----
-
-## 📸 Screenshots
-
-* S3 bucket created (Terraform output)
-* Game files uploaded (Terraform plan/apply logs)
-* Static website endpoint
-* Game playable in browser
-
----
-
-## ✅ References
-
-* [Terraform AWS Provider Documentation](https://registry.terraform.io/providers/hashicorp/aws/latest/docs)
-* [AWS S3 Static Website Hosting](https://docs.aws.amazon.com/AmazonS3/latest/userguide/WebsiteHosting.html)
