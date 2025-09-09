@@ -21,7 +21,7 @@ space-invaders-terraform/
 ```
 
 > 💡 All Terraform code files will be uploaded to this repo.
-> 🔗 [View Terraform Code in the Repo](#)
+> 🔗 [View Terraform Code in the Repo](https://github.com/1suleyman/-Hosting-My-Space-Invaders-Game-on-Amazon-S3-with-Terraform/tree/main/space-invaders-terraform)
 
 ---
 
@@ -33,32 +33,32 @@ This project is broken down into **five main steps**:
 
    * Input variables include the AWS region, S3 bucket name, and local game folder path.
    * Values are set in `terraform.tfvars` for environment-specific overrides.
-   * [See variables.tf](#) | [See terraform.tfvars](#)
+   * [See variables.tf](https://github.com/1suleyman/-Hosting-My-Space-Invaders-Game-on-Amazon-S3-with-Terraform/blob/main/space-invaders-terraform/variables.tf) | [See terraform.tfvars](https://github.com/1suleyman/-Hosting-My-Space-Invaders-Game-on-Amazon-S3-with-Terraform/blob/main/space-invaders-terraform/terraform.tfvars)
 
 2. **Create the S3 bucket**
 
    * Terraform provisions a bucket using the name defined in the variables.
    * The bucket will later host the static website.
-   * [See main.tf - bucket creation](#)
+   * [See main.tf - bucket creation](https://github.com/1suleyman/-Hosting-My-Space-Invaders-Game-on-Amazon-S3-with-Terraform/blob/main/space-invaders-terraform/main.tf)
 
 3. **Configure public access**
 
    * S3 buckets are private by default.
    * Terraform sets up public access so the game can be viewed by anyone online.
-   * [See main.tf - public access configuration](#)
+   * [See main.tf - public access configuration](https://github.com/1suleyman/-Hosting-My-Space-Invaders-Game-on-Amazon-S3-with-Terraform/blob/main/space-invaders-terraform/main.tf)
 
 4. **Apply bucket policy**
 
    * Terraform applies a policy granting public read access to all objects in the bucket.
    * This ensures the game files can be loaded in a browser.
-   * [See main.tf - bucket policy](#)
+   * [See main.tf - bucket policy](https://github.com/1suleyman/-Hosting-My-Space-Invaders-Game-on-Amazon-S3-with-Terraform/blob/main/space-invaders-terraform/main.tf)
 
 5. **Enable static website hosting and upload game files**
 
    * Terraform enables static website hosting with `index.html` as the entry point.
    * All files in the local `game/` folder are uploaded to S3.
    * After deployment, the website URL can be retrieved from outputs.
-   * [See main.tf - website configuration and object uploads](#)
+   * [See main.tf - website configuration and object uploads](https://github.com/1suleyman/-Hosting-My-Space-Invaders-Game-on-Amazon-S3-with-Terraform/blob/main/space-invaders-terraform/main.tf)
 
 ---
 
