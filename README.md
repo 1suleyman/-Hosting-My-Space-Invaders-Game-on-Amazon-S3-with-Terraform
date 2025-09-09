@@ -21,7 +21,7 @@ space-invaders-terraform/
 ```
 
 > 💡 All Terraform code files will be uploaded to this repo.
-> 🔗 [View Terraform Code in the Repo](#) (replace `#` with your repo link)
+> 🔗 [View Terraform Code in the Repo](#)
 
 ---
 
@@ -85,13 +85,19 @@ terraform apply
 * Confirm with `yes`
 * Terraform will create the bucket, apply the policy, enable website hosting, and upload all game files
 
+<img width="425" height="37" alt="Screenshot 2025-09-09 at 10 04 00" src="https://github.com/user-attachments/assets/75c5ff49-c468-479c-b7e7-b492c56583ac" />
+
 4. **Retrieve the website URL**
 
 ```bash
 terraform output website_url
 ```
 
+<img width="572" height="68" alt="Screenshot 2025-09-09 at 10 04 15" src="https://github.com/user-attachments/assets/367e781d-3439-4741-a51a-c9a651e76974" />
+
 * Open this URL in a browser to play your Space Invaders game!
+
+<img width="1132" height="820" alt="Screenshot 2025-09-09 at 10 04 34" src="https://github.com/user-attachments/assets/64f966c8-4d4d-4883-a191-b13e48d0689d" />
 
 ---
 
