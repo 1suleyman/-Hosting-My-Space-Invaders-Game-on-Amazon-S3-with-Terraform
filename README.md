@@ -4,6 +4,9 @@ I decided to host my **Space Invaders** game on **Amazon S3** using **Terraform*
 
 Terraform allows me to **declare the S3 bucket, public access, bucket policy, website hosting, and game file uploads in code** — reusable, version-controlled, and environment-friendly.
 
+<img width="1944" height="908" alt="image" src="https://github.com/user-attachments/assets/4575f56c-8fd6-482b-a64c-7dedf7bf12ee" />
+
+
 ---
 
 ## 📂 Project Structure
